@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<project xmlns="http://maven.apache.org/maven-navigation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/maven-navigation.xsd" name="Spring Batch: ${project.name}">
+
+	<bannerLeft>
+		<name>Spring Batch: ${project.name}</name>
+		<href>index.html</href>
+	</bannerLeft>
+
+	<skin>
+		<groupId>org.springframework.maven.skins</groupId>
+		<artifactId>maven-spring-skin</artifactId>
+		<version>1.0.5</version>
+	</skin>
+
+	<body>
+
+		<links>
+			<item name="${project.name}" href="index.html" />
+		</links>
+
+		<menu ref="reports" />
+
+	</body>
+
+</project>

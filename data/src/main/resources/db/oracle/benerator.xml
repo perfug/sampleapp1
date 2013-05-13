@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup 	xmlns="http://databene.org/benerator/0.7.5"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator/0.7.5 http://databene.org/benerator-0.7.5.xsd">
+		
+		<import defaults  = "true"
+		domains   = "product,person"
+		platforms = "db"/>
+
+		<bean id="fichier_sql" class="SQLEntityExporter">
+		  <property name="uri" value="newsql.sql"/>
+		  <property name="dialect" value="oracle"/>
+		</bean>
+
+		<database id="db" url="jdbc:oracle:thin:@//localhost:1521/xe" driver="oracle.jdbc.OracleDriver" user="newsql" password="newsqlpass" schema="newsql" batch="true" />
+		<execute uri="../oracle/schema.sql" target="db" onError="warn" />
+		<execute uri="../oracle/test-data.sql" target="db" />
+		
+		<generate type="CategoryFamily" pageSize="1000" count="2100" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="commissionRate" type="double" min="0.01" max="0.99" granularity="0.01" />
+			<attribute name="deletionDate" type="timestamp" min="2010-01-01" max="2012-01-01" />
+			<attribute name="familyPressType" type="int" />
+			<attribute name="familyType" pattern="Family[0-9]{1,2}" />
+			<attribute name="groupid" type="int" min="0" max="100" />
+			<attribute name="isDeletable" type="int" min="0" max="1" />
+			<attribute name="isDiscountable" type="int" min="0" max="1" />
+			<attribute name="isTracked" type="int" min="0" max="1" />
+			<attribute name="label" pattern="CF_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" unique="true" />
+			<attribute name="margin" type="int" min="-100" max="1000" />
+			<attribute name="marginCoefficient" type="double" min="0.1" max="10" />
+			<attribute name="marginType" type="int" min="0" max="1000" />
+			<attribute name="maximumAuthorisedAmount" type="int" min="0" />
+			<attribute name="minimumAuthorisedAmount" type="int" min="0" />
+			<attribute name="modificationDate" type="timestamp" min="2010-01-01" max="2012-01-01" />
+			<attribute name="productType" type="int" min="0" max="1000" />
+		</generate>
+		
+		<generate type="Product" pageSize="1000" count="100000" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="buyPrice" type="double"  min="0.1" max="1000"  />
+			<attribute name="canPutBack" type="int" min="0" max="1"  />
+			<attribute name="commission" type="double" min="0.1" max="100"  />
+			<attribute name="deletionDate" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="deliveredQuantity" type="int" min="0"  />
+			<attribute name="eanCode" type="string" generator="EAN8Generator" unique="true"  />
+			<attribute name="groupId" type="int"  />
+			<attribute name="isActive" type="int" min="0" max="1"  />
+			<attribute name="isFollowInStock" type="int" min="0" max="1"  />
+			<attribute name="isGenericProdct" type="int" min="0" max="1"  />
+			<attribute name="isOnlineProduct" type="int" min="0" max="1"  />
+			<attribute name="isProductionMonitoringManual" type="int" min="0" max="1"  />
+			<attribute name="isReference" type="int" min="0" max="1"  />
+			<attribute name="isSellable" type="int" min="0" max="1"  />
+			<attribute name="manualMargin" type="int" min="0" max="1"  />
+			<attribute name="manualMarginType" type="int" min="0" max="1"  />
+			<attribute name="manualVat" type="int" min="0" max="1"  />
+			<attribute name="manualVat" type="int" min="0" max="1"  />
+			<attribute name="margin" type="double" min="0" max="10000"  />
+			<attribute name="marginCoefficient" type="big_decimal" min="0"  />
+			<attribute name="modificationDate" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="previousBuyPrice" type="double" min="0" />
+			<attribute name="productLabel" type="string" pattern="P_([BCDFJLMNPRSTVZ][AEIOU]){2,3}"  />
+			<attribute name="productMarginType" type="double" min="0"  />
+			<attribute name="productType" type="int" min="0"  />
+			<attribute name="ranking" type="int"  />
+			<attribute name="sellPrice" type="big_decimal" min="0" max="1000"  />
+			<attribute name="updatablePrice" type="int" min="0" max="1"  />
+			<reference name="categoryFamily_id" type="double" source="db" targetType="CategoryFamily" cyclic="true" />
+		</generate>
+		<!-- For building the recursive link as a tree -->
+		<iterate type="Product" source="db" consumer="db.updater()"> 
+			<attribute name="parentProduct_id" source="db"
+				selector="{{ftl:select id from Product where id=(${Product.id}/10+1)}}" cyclic="true"/>
+		</iterate>
+		
+		<generate type="Store" pageSize="1000" count="10000" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="apeCode" type="string" pattern="[0-9]{4}[A-Z]{1}" />
+			<attribute name="dealerParametersReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="distributorParametersReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="generalParametersReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="groupId" type="int" />
+			<attribute name="legalForm" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="mailServerReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="mailServerReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}"  />
+			<attribute name="managementCenter1Reference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="managementCenter2Reference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="managementCenterSuscriber" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="nVAT" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="rcs" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="storeName" type="string" pattern="S_([BCDFJLMNPRSTVZ][AEIOU]){2,3}"  />
+			<attribute name="storeReference" type="string" pattern="([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+		</generate>
+		
+		<!-- Country use only test data -->
+		
+		<generate type="VAT" pageSize="1000" count="500" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(2500)" />
+			<attribute name="deletionDate" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="groupId" type="int" />
+			<attribute name="isExempted" type="int" min="0" max="1"  />
+			<attribute name="vatLabel" type="string" pattern="VAT_([BCDFJLMNPRSTVZ][AEIOU]){2,3}"  />
+			<attribute name="vatRate" type="double"  min="0.01" max="0.99" granularity="0.01" />
+			<attribute name="vatType" type="int" min="0" />
+			<reference name="country_alpha3Code" source="db" type="string" targetType="Country" cyclic="true" />
+		</generate>
+		
+		<generate type="CategoryFamily_VAT" count="249" consumer="db">
+			<reference name="CategoryFamily_id" type="long" source="db" targetType="CategoryFamily" cyclic="false" />
+			<reference name="vats_id" type="long" source="db" targetType="VAT" cyclic="false" />
+		</generate>
+		
+		<generate type="Stock" pageSize="100" count="500" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="groupId" type="int" />
+			<attribute name="isKeptAfterCallback" type="int" min="0" max="1"  />
+			<attribute name="modificationDate" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="quantity" type="int" min="1000000" />
+			<attribute name="stockType" type="int" min="0" />
+			<reference name="product_id" type="big_integer" source="db" targetType="Product" cyclic="true" />
+			<reference name="store_id" type="big_integer" source="db" targetType="Store" cyclic="true" />
+		</generate>
+		
+		<generate type="SaleTransaction" pageSize="10000" count="300000" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="cancellation" type="timestamp" min="2010-01-01" max="2012-01-01"  nullable="true" />
+			<variable name="individu" generator="PersonGenerator" dataset="FR" locale="fr"/>
+			<attribute name="cancellationClerkName" type="string" script="individu.givenName" nullable="true" />
+			<attribute name="cancellationClerkNumber" type="int" min="0" nullable="true"/>
+			<attribute name="cancellationTicketNumber" type="int" min="0" nullable="true"/>
+			<attribute name="cancellationType" type="int" min="0" nullable="true"/>
+			<attribute name="changeAmount" type="int" min="0" />
+			<attribute name="clerkName" type="string" script="individu.givenName" />
+			<attribute name="clerkNumber" type="int" min="0" />
+			<attribute name="clientName" type="string" script="individu.givenName" />
+			<attribute name="clientNumber" type="int" min="0" />
+			<attribute name="discountAmount" type="int" min="0" />
+			<attribute name="discountRate" type="int" min="1" max="100" />
+			<attribute name="groupId" type="int" min="0" />
+			<attribute name="startDate" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="ticketNumber" type="int" min="0" />
+			<!-- Total amount will be computed -->
+			<attribute name="transactionKey" type="string" pattern="TK_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+		</generate> 
+		
+		<generate type="SaleOperation" pageSize="10000" count="600000" consumer="db">
+			<attribute name="id" type="long" generator="new org.databene.benerator.primitive.IncrementalIdGenerator(1500)" />
+			<attribute name="amount" type="big_decimal" min="0" max="1000" granularity="0.01" />
+			<!--No annulation -->
+			<attribute name="annulationType" type="int" min="0" />
+			<attribute name="bossTransactionNumber" type="int" min="0" />
+			<attribute name="businessCategory" type="int" min="0" />
+			<variable name="individu" generator="PersonGenerator" dataset="FR" locale="fr"/>
+			<attribute name="cashierName" type="string" script="individu.givenName" />
+			<attribute name="cashierNumber" type="int" />
+			<attribute name="currency" type="string" values="'EUR','USD', 'GBP', 'JPY'" />
+			<attribute name="OPERATIONDATE" type="timestamp" min="2010-01-01" max="2012-01-01"  />
+			<attribute name="discountAmount" type="int" min="0" max="100" nullable="true" />	
+			<attribute name="discountRate" type="big_integer" min="0.1" max="0.99" granularity="0.01" nullable="true" />
+			<attribute name="groupId" type="int" min="0" />
+			<attribute name="increaseRate" type="big_integer" min="0.1" max="0.99" granularity="0.01" nullable="true" />
+			<attribute name="isBackToStock" type="int" min="0" max="1" />
+			<attribute name="isReturn" type="int" min="0" max="1" />
+			<attribute name="isScanned" type="int" min="0" max="1" />
+			<attribute name="onlineSaleStatus" type="string" pattern="OSS_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<!-- Label will be added according to product id -->
+			<attribute name="quantity" type="int" min="1" max="10" />
+			<attribute name="reloadCode" type="string" pattern="RC_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="salesCode" type="string" pattern="SC_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+			<attribute name="specialOperationTypeSalePrice" type="int" min="0" max="1000" />
+			<reference name="product_id" type="big_integer" source="db" targetType="Product" cyclic="true" />
+			<reference name="saleTransaction_id" type="big_integer" source="db" targetType="SaleTransaction" cyclic="true" />
+			<attribute name="supplierProductReference" type="string" pattern="SPR_([BCDFJLMNPRSTVZ][AEIOU]){2,3}" />
+		</generate>
+		
+		<!-- For adding product label -->
+		<iterate type="SaleOperation" source="db" consumer="db.updater()"> 
+			<attribute name="productLabel" source="db"
+				selector="{{ftl:select productLabel from Product where id=(${this.product_id})}}" cyclic="true"/>
+		</iterate>
+		
+		<!-- For computing total amount per transaction -->
+		<iterate type="SaleTransaction" source="db" consumer="db.updater()"> 
+			<attribute name="totalAmount" source="db"
+				selector="{{ftl:select sum(amount) from SaleOperation where saleTransaction_id=(${this.id})}}" cyclic="true"/>
+		</iterate>
+</setup>
