@@ -1,6 +1,6 @@
 README
 ------
-NewSQL is a POC designed to evaluate the ability to migrate a standard Spring MVC application from a relational database to a NewSQL database.
+This application is a POC that will be used during Paris Performance User Group
 
 HOW-TO
 ------

@@ -1,0 +1,30 @@
+drop table CategoryFamily_VAT;
+drop table VAT;
+drop table SaleOperation;
+drop table SaleTransaction;
+drop table Stock;
+drop table Product;
+drop table CategoryFamily;
+drop table Store;
+drop table Country;
+
+
+create table CategoryFamily (id bigint not null auto_increment, commissionRate decimal(19,2), deletionDate datetime, familyPressType integer, familyType varchar(255), groupid integer, isDeletable bit, isDiscountable bit, isTracked bit, label varchar(255), margin bigint, marginCoefficient decimal(19,2), marginType integer, maximumAuthorisedAmount bigint, minimumAuthorisedAmount bigint, modificationDate datetime, productType integer, primary key (id));
+create table CategoryFamily_VAT (CategoryFamily_id bigint not null, vats_id bigint not null, primary key (CategoryFamily_id, vats_id));
+create table Country (alpha3Code varchar(255) not null, countryName varchar(255), numericCode integer, primary key (alpha3Code));
+create table Product (id bigint not null auto_increment, buyPrice bigint, canPutBack bit, commission decimal(19,2), deletionDate datetime, deliveredQuantity integer, eanCode varchar(255), groupId integer, isActive bit, isFollowInStock bit, isGenericProdct bit, isOnlineProduct bit, isProductionMonitoringManual bit, isReference bit, isSellable bit, manualMargin bit, manualMarginType bit, manualVat bit, margin bigint, marginCoefficient decimal(19,2), modificationDate datetime, previousBuyPrice bigint, productLabel varchar(255), productMarginType integer, productType integer, ranking integer, sellPrice decimal(19,2), updatablePrice bit, categoryFamily_id bigint, parentProduct_id bigint, primary key (id));
+create table SaleOperation (id bigint not null auto_increment, amount decimal(19,2), annulation datetime, annulationCashierName varchar(255), annulationCashierNumber integer, annulationType integer, bossTransactionNumber varchar(255), businessCategory integer, cashierName varchar(255), cashierNumber integer, currency varchar(255), OPERATIONDATE datetime, discountAmount varchar(255), discountRate bigint, groupId integer, increaseRate bigint, isBackToStock bit, isReturn bit, isScanned bit, onlineSaleStatus varchar(255), productLabel varchar(255), quantity integer, reloadCode varchar(255), salesCode varchar(255), specialOperationTypeSalePrice integer, supplierProductReference varchar(255), product_id bigint, saleTransaction_id bigint, primary key (id));
+create table SaleTransaction (id bigint not null auto_increment, cancellation datetime, cancellationClerkName varchar(255), cancellationClerkNumber integer, cancellationTicketNumber integer, cancellationType integer, changeAmount varchar(255), clerkName varchar(255), clerkNumber integer, clientName varchar(255), clientNumber integer, discountAmount varchar(255), discountRate bigint, groupId integer, startDate datetime, ticketNumber integer, totalAmount decimal(19,2), transactionKey varchar(255), primary key (id));
+create table Stock (id bigint not null auto_increment, groupId integer, isKeptAfterCallback bit, modificationDate datetime, quantity integer, stockType integer, product_id bigint, store_id bigint, primary key (id));
+create table Store (id bigint not null auto_increment, apeCode varchar(255), contactReference varchar(255), dealerParametersReference varchar(255), distributorParametersReference varchar(255), generalParametersReference varchar(255), groupId integer, legalForm varchar(255), mailServerReference varchar(255), managementCenter1Reference varchar(255), managementCenter2Reference varchar(255), managementCenterSuscriber varchar(255), nVAT varchar(255), rcs varchar(255), storeName varchar(255), storeReference varchar(255), primary key (id));
+create table VAT (id bigint not null auto_increment, deletionDate datetime, groupId integer, isDeletable bit, isExempted bit, vatLabel varchar(255), vatRate decimal(20,10), vatType integer, country_alpha3Code varchar(255), primary key (id));
+alter table CategoryFamily_VAT add index FK6AE7336C7CD9FBB0 (CategoryFamily_id), add constraint FK6AE7336C7CD9FBB0 foreign key (CategoryFamily_id) references CategoryFamily (id);
+alter table CategoryFamily_VAT add index FK6AE7336CE300D6E3 (vats_id), add constraint FK6AE7336CE300D6E3 foreign key (vats_id) references VAT (id);
+alter table Product add index FK50C664CF835F3F2E (parentProduct_id), add constraint FK50C664CF835F3F2E foreign key (parentProduct_id) references Product (id);
+alter table Product add index FK50C664CF7CD9FBB0 (categoryFamily_id), add constraint FK50C664CF7CD9FBB0 foreign key (categoryFamily_id) references CategoryFamily (id);
+alter table SaleOperation add index FK4ACCC4C04589BBE4 (saleTransaction_id), add constraint FK4ACCC4C04589BBE4 foreign key (saleTransaction_id) references SaleTransaction (id);
+alter table SaleOperation add index FK4ACCC4C052FF8304 (product_id), add constraint FK4ACCC4C052FF8304 foreign key (product_id) references Product (id);
+alter table Stock add index FK4C806F652FF8304 (product_id), add constraint FK4C806F652FF8304 foreign key (product_id) references Product (id);
+alter table Stock add index FK4C806F616948844 (store_id), add constraint FK4C806F616948844 foreign key (store_id) references Store (id);
+alter table VAT add index FK14B09FFF9D8B (country_alpha3Code), add constraint FK14B09FFF9D8B foreign key (country_alpha3Code) references Country (alpha3Code);
+alter table SaleOperation ADD INDEX GRPID_DATE_INDEX (groupId ASC, OPERATIONDATE ASC); 

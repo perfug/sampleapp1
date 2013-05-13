@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<import resource="classpath:/META-INF/spring/common-context.xml"/>
+	
+	<jdbc:embedded-database id="dataSource" type="H2" />
+	
+<!-- 	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource"> -->
+<!-- 	    <property name="driverClassName" value="com.mysql.jdbc.Driver"/> -->
+<!-- 	    <property name="url" value="jdbc:mysql://10.42.4.98:3006/newsql2"/> -->
+<!-- 	    <property name="username" value="newsql"/> -->
+<!-- 	    <property name="password" value="newsqlpass"/> -->
+<!-- 	</bean> -->
+	
+	
+	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+			<property name="showSql" value="true"/>
+            <property name="generateDdl" value="true"/>
+            <property name="database" value="H2"/>
+<!--             <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" /> -->
+    </bean>
+    
+    
+</beans>
