@@ -20,22 +20,6 @@ firefox http://localhost:8080/
 In another console
 cd <Checkout dir>/newsql/injector
 ./run
-
-3) Running on MySQL
--------------------
-Create a newsql schema in MySQL
-Execute <Checkout dir>/newsql/data/src/main/resources/db/mysql/schema.sql
-Execute <Checkout dir>/newsql/data/src/main/resources/db/mysql/test-data.sql
-Put a /etc/newsql/override.properties file containing
-
-dataSource.driverClassName=com.mysql.jdbc.Driver
-dataSource.url=jdbc:mysql://localhost:3306/newsql
-dataSource.username=newsql
-dataSource.password=newsqlpass
-initialize-database.enabled=false
-dataSource.pool.maxIdle=100
-dataSource.pool.maxActive=799
-dataSource.pool.maxWait=-1
-
-And goto 1) and 2)
+In case the following error is encountered, launch ./run again
+[ERROR] Failed to execute goal on project gatling-charts-highcharts: Could not resolve dependencies for project io.gatling.highcharts:gatling-charts-highcharts:jar:2.0.0-SNAPSHOT: The following artifacts could not be resolved: io.gatling:gatling-app:jar:2.0.0-SNAPSHOT, io.gatling:gatling-charts:jar:2.0.0-SNAPSHOT, io.gatling:gatling-recorder:jar:2.0.0-SNAPSHOT: Could not find artifact io.gatling:gatling-app:jar:2.0.0-SNAPSHOT -> [Help 1]
 
