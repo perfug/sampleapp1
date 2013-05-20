@@ -1,11 +1,6 @@
 package com.octo.red.newsql.services;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import com.octo.red.newsql.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,18 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.octo.red.newsql.model.CategoryFamily;
-import com.octo.red.newsql.model.Country;
-import com.octo.red.newsql.model.InventoryRecord;
-import com.octo.red.newsql.model.Product;
-import com.octo.red.newsql.model.SaleOperation;
-import com.octo.red.newsql.model.SaleTransaction;
-import com.octo.red.newsql.model.SampleFactory;
-import com.octo.red.newsql.model.Stock;
-import com.octo.red.newsql.model.Store;
-import com.octo.red.newsql.model.TotalVo;
-import com.octo.red.newsql.model.TurnoverVo;
-import com.octo.red.newsql.model.VAT;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
+import java.util.List;
 
 @ContextConfiguration("classpath:com/octo/rnd/PersistenceTests-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -44,7 +31,7 @@ public class ServiceTest {
 	@Transactional
 	public void testBuyFirstProduct() {
 		//Given
-		final BigDecimal unitPrice = new BigDecimal(10);
+		final BigDecimal unitPrice = BigDecimal.TEN;
 		final BigDecimal vatRate = new BigDecimal("0.1");
 		VAT vat = SampleFactory.buildVAT();
 		Country country = SampleFactory.buildCountry();
@@ -73,7 +60,7 @@ public class ServiceTest {
 		SaleOperation operation = transactionService.buy(country.getAlpha3Code(), product.getId(), store.getId(), null);
 		//Then
 		Assert.assertNotNull(operation);
-		final BigDecimal totalPrice = unitPrice.multiply(vatRate.add(new BigDecimal(1)));
+		final BigDecimal totalPrice = unitPrice.multiply(vatRate.add(BigDecimal.ONE));
 		Assert.assertEquals(0, totalPrice.compareTo(operation.getAmount()));
 		
 		@SuppressWarnings("unchecked")
@@ -88,9 +75,9 @@ public class ServiceTest {
 	@Transactional
 	public void testBuySecondProduct() {
 		//Given
-		final BigDecimal unitPrice = new BigDecimal(10);
+		final BigDecimal unitPrice = BigDecimal.TEN;
 		final BigDecimal vatRate = new BigDecimal("0.1");
-		final BigDecimal initialTotalAmount = new BigDecimal(14);
+		final BigDecimal initialTotalAmount = BigDecimal.valueOf(14);
 		VAT vat = SampleFactory.buildVAT();
 		Country country = SampleFactory.buildCountry();
 		entityManager.persist(country);
@@ -128,7 +115,7 @@ public class ServiceTest {
 		//Then
 		Assert.assertNotNull(operation);
 		//Ignore the conversion rate for now
-		final BigDecimal totalPrice = unitPrice.multiply(vatRate.add(new BigDecimal(1))).add(initialTotalAmount);
+		final BigDecimal totalPrice = unitPrice.multiply(vatRate.add(BigDecimal.ONE)).add(initialTotalAmount);
 		
 		@SuppressWarnings("unchecked")
 		List<SaleTransaction> sts = (List<SaleTransaction>) entityManager.createQuery("select st from SaleTransaction st").getResultList();
@@ -142,7 +129,7 @@ public class ServiceTest {
 	@Transactional
 	public void testTotal() {
 		//Given
-		final BigDecimal initialTotalAmount = new BigDecimal(14);
+		final BigDecimal initialTotalAmount = BigDecimal.valueOf(14);
 		SaleTransaction saleTransaction = SampleFactory.buildSaleTransaction();
 		saleTransaction.setTotalAmount(initialTotalAmount);
 		entityManager.persist(saleTransaction);
@@ -180,11 +167,11 @@ public class ServiceTest {
 		Assert.assertNotNull(turnovers);
 		Assert.assertEquals(2, turnovers.size());
 		final TurnoverVo toEur = turnovers.get(0);
-		Assert.assertEquals(0, new BigDecimal("101.1").compareTo(toEur.getTotalAmout()));
+		Assert.assertEquals(0, new BigDecimal("101.1").compareTo(toEur.getTotalAmount()));
 		Assert.assertEquals("EUR", toEur.getCurrency());
 		Assert.assertEquals(1, toEur.getGroupId());
 		final TurnoverVo toUsd = turnovers.get(1);
-		Assert.assertEquals(0, new BigDecimal("3.3").compareTo(toUsd.getTotalAmout()));
+		Assert.assertEquals(0, new BigDecimal("3.3").compareTo(toUsd.getTotalAmount()));
 		Assert.assertEquals("USD", toUsd.getCurrency());
 		Assert.assertEquals(1, toUsd.getGroupId());
 	}

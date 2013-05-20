@@ -5,15 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
-import com.octo.red.newsql.model.CategoryFamily;
-import com.octo.red.newsql.model.Country;
-import com.octo.red.newsql.model.Product;
-import com.octo.red.newsql.model.SaleOperation;
-import com.octo.red.newsql.model.SaleTransaction;
-import com.octo.red.newsql.model.Stock;
-import com.octo.red.newsql.model.Store;
-import com.octo.red.newsql.model.VAT;
-
 /**
  * Build sample domain objects without any relations. 
  * Fields that refrence an domain objects remain null
@@ -67,7 +58,7 @@ public final class SampleFactory {
 		product.setCanPutBack(false);
 		product.setCategoryFamily(null);
 		product.setChildProducts(new HashSet<Product>());
-		product.setCommission(new BigDecimal(1));
+		product.setCommission(BigDecimal.ONE);
 		product.setDeletionDate(SampleFactory.buildDate(2012, 01, 01));
 		product.setDeliveredQuantity(1);
 		product.setEanCode("eanCode");
@@ -83,13 +74,13 @@ public final class SampleFactory {
 		product.setManualMarginType(false);
 		product.setManualVat(false);
 		product.setMargin(1L);
-		product.setMarginCoefficient(new BigDecimal(1));
+		product.setMarginCoefficient(BigDecimal.ONE);
 		product.setModificationDate(SampleFactory.buildDate(2012, 01, 01));
 		product.setPreviousBuyPrice(1L);
 		product.setProductLabel(productLabel);
 		product.setProductType(1);
 		product.setRanking(1);
-		product.setSellPrice(new BigDecimal(1));
+		product.setSellPrice(BigDecimal.ONE);
 		product.setUpdatablePrice(false);
 
 		return product;
@@ -97,7 +88,7 @@ public final class SampleFactory {
 	
 	public static SaleOperation buildSaleOperation() {
 		SaleOperation saleOperation = new SaleOperation();
-		saleOperation.setAmount(new BigDecimal(10));
+		saleOperation.setAmount(BigDecimal.TEN);
 		saleOperation.setCurrency("EUR");
 		saleOperation.setAnnulation(SampleFactory.buildDate(2012, 01, 01));
 		saleOperation.setAnnulationCashierName("annulationCashierName");
@@ -143,7 +134,7 @@ public final class SampleFactory {
 		saleTransaction.setGroupId(1);
 		saleTransaction.setStartDate(SampleFactory.buildDate(2012, 01, 01));
 		saleTransaction.setTicketNumber(1);
-		saleTransaction.setTotalAmount(new BigDecimal(10));
+		saleTransaction.setTotalAmount(BigDecimal.TEN);
 		saleTransaction.setTransactionKey("transactionKey");
 		return saleTransaction;
 	}

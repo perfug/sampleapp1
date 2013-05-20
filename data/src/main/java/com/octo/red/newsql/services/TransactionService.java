@@ -1,24 +1,14 @@
 package com.octo.red.newsql.services;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-
+import com.octo.red.newsql.dao.*;
+import com.octo.red.newsql.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.octo.red.newsql.dao.ProductRepository;
-import com.octo.red.newsql.dao.SaleOperationRepository;
-import com.octo.red.newsql.dao.SaleTransactionRepository;
-import com.octo.red.newsql.dao.StockRepository;
-import com.octo.red.newsql.dao.VatRepository;
-import com.octo.red.newsql.model.Product;
-import com.octo.red.newsql.model.SaleOperation;
-import com.octo.red.newsql.model.SaleTransaction;
-import com.octo.red.newsql.model.Stock;
-import com.octo.red.newsql.model.TotalVo;
-import com.octo.red.newsql.model.VAT;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 
 @Service
 public class TransactionService {
@@ -53,7 +43,7 @@ public class TransactionService {
 		}
 		
 		//Compute Price in Euro
-		BigDecimal eurPrice = v.getVatRate().add(new BigDecimal(1)).multiply(p.getSellPrice());
+		BigDecimal eurPrice = v.getVatRate().add(BigDecimal.ONE).multiply(p.getSellPrice());
 		//Price in the catalog are in EUR, convert according to the country
 		String operationCurrency = currencyConverter.getCurrency(countryCode);
 		BigDecimal price = currencyConverter.convert(eurPrice, EUR, operationCurrency);
@@ -81,7 +71,7 @@ public class TransactionService {
 			saleTransaction.setGroupId(1);
 			saleTransaction.setStartDate(new Date());
 			saleTransaction.setTicketNumber(1);
-			saleTransaction.setTotalAmount(new BigDecimal(0));
+			saleTransaction.setTotalAmount(BigDecimal.ZERO);
 			saleTransaction.setTransactionKey("transactionKey");
 		}
 		
