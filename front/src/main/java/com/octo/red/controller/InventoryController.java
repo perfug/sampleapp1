@@ -1,7 +1,7 @@
 package com.octo.red.controller;
 
-import java.util.List;
-
+import com.octo.red.newsql.model.InventoryRecord;
+import com.octo.red.newsql.services.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.octo.red.newsql.model.InventoryRecord;
-import com.octo.red.newsql.services.InventoryService;
+import java.util.List;
 
 @Controller
 public class InventoryController {
@@ -25,7 +24,7 @@ public class InventoryController {
 	@RequestMapping(value = "/inventory", method = RequestMethod.GET)
 	public @ResponseBody List<InventoryRecord> getInventory(@RequestParam("storeId") long storeId) {
 		
-		//List(produit, nombre, cat�gorie, sous-total par cat�gorie)
+		//List(produit, nombre, catégorie, sous-total par catégorie)
 		
 		logger.info("Request received [store={}] on /inventory", storeId);
 		
