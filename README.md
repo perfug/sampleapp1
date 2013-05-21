@@ -12,7 +12,7 @@ HOW-TO
 cd <root dir>
 mvn install 
 cd front
-mvn jetty:run
+./run.sh
 
 URL: http://localhost:8080/
 
