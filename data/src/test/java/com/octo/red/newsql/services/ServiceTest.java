@@ -160,7 +160,7 @@ public class ServiceTest {
 		// Otherwise the query returns the existing order (and we didn't set the
 		// parent in the item)...
 		entityManager.clear();
-		turnoverService.setActualTestDate(SampleFactory.buildDate(2012,02,01));
+		turnoverService.setActualTestDate(SampleFactory.buildDate(2012,01,01));
 		//When
 		final List<TurnoverVo> turnovers = turnoverService.computeTurnover(1);
 		//Then

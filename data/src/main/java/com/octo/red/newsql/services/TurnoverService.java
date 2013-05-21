@@ -1,16 +1,15 @@
 package com.octo.red.newsql.services;
 
+import com.octo.red.newsql.dao.SaleOperationRepository;
+import com.octo.red.newsql.model.TurnoverVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.octo.red.newsql.dao.SaleOperationRepository;
-import com.octo.red.newsql.model.TurnoverVo;
 
 @Service
 public class TurnoverService {
@@ -36,13 +35,11 @@ public class TurnoverService {
 		calendar.setTime(actualDate);
 		calendar.add(Calendar.HOUR, -1);
 		Date minDate = calendar.getTime();
-		List<TurnoverVo> result = new ArrayList<TurnoverVo>();
 		List<Object[]> lines = saleOperationRepository.aggregateAmount(groupId, minDate);
-		if(lines != null) {
-			for(Object[] l : lines) {
-				result.add(new TurnoverVo(groupId, (BigDecimal)l[0], (String)l[1]));
-			}
-		}
+		List<TurnoverVo> result = new ArrayList<TurnoverVo>(lines.size());
+        for(Object[] l : lines) {
+            result.add(new TurnoverVo(groupId, (BigDecimal)l[0], (String)l[1]));
+        }
 		return result;
 	}
 }
