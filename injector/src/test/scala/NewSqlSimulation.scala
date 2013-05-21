@@ -10,6 +10,7 @@ class NewSqlSimulation extends Simulation {
   // Test params (in seconds)
   val rampUp = 10;
   val duration = rampUp * 4
+  val thinkRatio = 1
   // Users per scenario
   val txUsers = 80
   val ivtUsers = 10
@@ -47,7 +48,7 @@ class NewSqlSimulation extends Simulation {
 			.headers(headers)
 			.check(regex(""".*\{"txId":([0-9]*),.*""").exists.saveAs("transactionId"))
 		)
-		.pause(1, 2)
+		.pause(1 * thinkRatio, 2 * thinkRatio)
 		.doIf((s: Session) => {
 			val txS = s.getAttribute("transactionId"); 
 			txS match {  
@@ -66,14 +67,14 @@ class NewSqlSimulation extends Simulation {
 				.headers(headers)
 			)
 		}
-		.pause(2, 3)
+		.pause(2 * thinkRatio, 3 * thinkRatio)
 		.exec(
 			http("total")
 			.get("/total")
 			.queryParam("txId", "${transactionId}")
 			.headers(headers)
 		)
-		.pause(2, 3)
+		.pause(2 * thinkRatio, 3 * thinkRatio)
 	}
 	
 	val ivtScn = scenario("Inventory scenario")
@@ -85,7 +86,7 @@ class NewSqlSimulation extends Simulation {
 			.queryParam("storeId", "${storeId}")
 			.headers(headers)
 		)
-		.pause(5, 10)
+		.pause(5 * thinkRatio, 10 * thinkRatio)
 	}
 	
 	val toScn = scenario("Turnover scenario")
@@ -97,7 +98,7 @@ class NewSqlSimulation extends Simulation {
 			.queryParam("groupId", "${groupId}")
 			.headers(headers)
 		)
-		.pause(5, 10)
+		.pause(5 * thinkRatio, 10 * thinkRatio)
 	}
 
 	setUp(
