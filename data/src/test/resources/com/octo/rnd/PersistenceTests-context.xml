@@ -8,14 +8,6 @@
 	
 	<jdbc:embedded-database id="dataSource" type="H2" />
 	
-<!-- 	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource"> -->
-<!-- 	    <property name="driverClassName" value="com.mysql.jdbc.Driver"/> -->
-<!-- 	    <property name="url" value="jdbc:mysql://10.42.4.98:3006/newsql2"/> -->
-<!-- 	    <property name="username" value="newsql"/> -->
-<!-- 	    <property name="password" value="newsqlpass"/> -->
-<!-- 	</bean> -->
-	
-	
 	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
 			<property name="showSql" value="true"/>
             <property name="generateDdl" value="true"/>
