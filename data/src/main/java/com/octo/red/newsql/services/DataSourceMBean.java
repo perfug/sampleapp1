@@ -6,6 +6,7 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
@@ -16,105 +17,105 @@ import java.sql.SQLException;
 public class DataSourceMBean {
 
     @Autowired
-    BasicDataSource dataSource;
+    DataSource dataSource;
 
     @ManagedAttribute
     public long getMinEvictableIdleTimeMillis() {
-        return dataSource.getMinEvictableIdleTimeMillis();
+        return ((BasicDataSource) dataSource).getMinEvictableIdleTimeMillis();
     }
 
     @ManagedAttribute
     public int getMinIdle() {
-        return dataSource.getMinIdle();
+        return ((BasicDataSource) dataSource).getMinIdle();
     }
 
     @ManagedAttribute
     public int getMaxIdle() {
-        return dataSource.getMaxIdle();
+        return ((BasicDataSource) dataSource).getMaxIdle();
     }
 
     @ManagedAttribute
     public boolean getTestOnBorrow() {
-        return dataSource.getTestOnBorrow();
+        return ((BasicDataSource) dataSource).getTestOnBorrow();
     }
 
     @ManagedAttribute
     public String getValidationQuery() {
-        return dataSource.getValidationQuery();
+        return ((BasicDataSource) dataSource).getValidationQuery();
     }
 
     @ManagedAttribute
     public int getNumIdle() {
-        return dataSource.getNumIdle();
+        return ((BasicDataSource) dataSource).getNumIdle();
     }
 
     @ManagedAttribute
     public long getTimeBetweenEvictionRunsMillis() {
-        return dataSource.getTimeBetweenEvictionRunsMillis();
+        return ((BasicDataSource) dataSource).getTimeBetweenEvictionRunsMillis();
     }
 
     @ManagedAttribute
     public int getMaxActive() {
-        return dataSource.getMaxActive();
+        return ((BasicDataSource) dataSource).getMaxActive();
     }
 
     @ManagedAttribute
     public int getMaxOpenPreparedStatements() {
-        return dataSource.getMaxOpenPreparedStatements();
+        return ((BasicDataSource) dataSource).getMaxOpenPreparedStatements();
     }
 
     @ManagedAttribute
     public boolean getTestWhileIdle() {
-        return dataSource.getTestWhileIdle();
+        return ((BasicDataSource) dataSource).getTestWhileIdle();
     }
 
     @ManagedAttribute
     public String getDriverClassName() {
-        return dataSource.getDriverClassName();
+        return ((BasicDataSource) dataSource).getDriverClassName();
     }
 
     @ManagedAttribute
     public int getNumTestsPerEvictionRun() {
-        return dataSource.getNumTestsPerEvictionRun();
+        return ((BasicDataSource) dataSource).getNumTestsPerEvictionRun();
     }
 
     @ManagedAttribute
     public int getInitialSize() {
-        return dataSource.getInitialSize();
+        return ((BasicDataSource) dataSource).getInitialSize();
     }
 
     @ManagedAttribute
     public String getUrl() {
-        return dataSource.getUrl();
+        return ((BasicDataSource) dataSource).getUrl();
     }
 
     @ManagedAttribute
     public boolean isPoolPreparedStatements() {
-        return dataSource.isPoolPreparedStatements();
+        return ((BasicDataSource) dataSource).isPoolPreparedStatements();
     }
 
     @ManagedAttribute
     public String getUsername() {
-        return dataSource.getUsername();
+        return ((BasicDataSource) dataSource).getUsername();
     }
 
     @ManagedAttribute
     public int getNumActive() {
-        return dataSource.getNumActive();
+        return ((BasicDataSource) dataSource).getNumActive();
     }
 
     @ManagedAttribute
     public long getMaxWait() {
-        return dataSource.getMaxWait();
+        return ((BasicDataSource) dataSource).getMaxWait();
     }
 
     @ManagedAttribute
     public boolean getTestOnReturn() {
-        return dataSource.getTestOnReturn();
+        return ((BasicDataSource) dataSource).getTestOnReturn();
     }
 
     @ManagedAttribute
     public int getLoginTimeout() throws SQLException {
-        return dataSource.getLoginTimeout();
+        return ((BasicDataSource) dataSource).getLoginTimeout();
     }
 }
