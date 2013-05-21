@@ -7,18 +7,95 @@
 	<artifactId>parent</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Pom Parent for NewSQL</name>
+	<name>NewSQL Parent Pom</name>
 	<modules>
         <module>front</module>
         <module>data</module>
+        <module>injector</module>
     </modules>
     <properties>
 		<java-version>1.6</java-version>
-		<org.springframework-version>3.0.6.RELEASE</org.springframework-version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <org.springframework-version>3.0.6.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.9</org.aspectj-version>
 		<org.slf4j-version>1.5.10</org.slf4j-version>
 		<org.mortbay.jetty-version>8.1.0.v20120127</org.mortbay.jetty-version>
 		<log4j.version>1.2.15</log4j.version>
 	</properties>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.14.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
