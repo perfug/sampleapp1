@@ -1,7 +1,16 @@
 package com.octo.red.newsql.services;
 
-import com.octo.red.newsql.dao.*;
-import com.octo.red.newsql.model.*;
+import com.octo.red.newsql.dao.ProductRepository;
+import com.octo.red.newsql.dao.SaleOperationRepository;
+import com.octo.red.newsql.dao.SaleTransactionRepository;
+import com.octo.red.newsql.dao.StockRepository;
+import com.octo.red.newsql.dao.VatRepository;
+import com.octo.red.newsql.model.Product;
+import com.octo.red.newsql.model.SaleOperation;
+import com.octo.red.newsql.model.SaleTransaction;
+import com.octo.red.newsql.model.Stock;
+import com.octo.red.newsql.model.TotalVo;
+import com.octo.red.newsql.model.VAT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +22,10 @@ import java.util.Date;
 @Service
 public class TransactionService {
 	private static final String EUR = "EUR";
+
+    @Autowired
+    CacheManager cacheManager;
+
 	@Autowired
 	VatRepository vatRepository;
 	@Autowired
@@ -32,8 +45,8 @@ public class TransactionService {
 			throw new IllegalArgumentException("countryCode must not be null");
 		}
 		
-		Product p = productRepository.findOne(productId);
-		VAT v = vatRepository.findOneByCountryCodeAndProductId(countryCode.toUpperCase(), productId);
+		Product p = findProductById(productId);
+		VAT v = getVatByCountryCodeAndProductId(countryCode, productId);
 		//If no VAT is defined for this product, use the VAT for the product category it belongs to
 		if(v == null) {
 		}
@@ -121,7 +134,7 @@ public class TransactionService {
 		
 	}
 
-	public TotalVo computeTotal(long txId) {
+    public TotalVo computeTotal(long txId) {
 		SaleTransaction saleTransaction = saleTransactionRepository.findOne(txId);
 		if(saleTransaction == null) {
 			throw new SystemException("No transaction found for id " + txId);
@@ -129,4 +142,25 @@ public class TransactionService {
 		//Transaction amount is computed in Euros
 		return new TotalVo(saleTransaction.getTotalAmount(), EUR);
 	}
+
+    private Product findProductById(long productId) {
+        Product p = cacheManager.getFromCache("product", (Long) productId);
+        if(p != null) {
+            return p;
+        }
+        p = productRepository.findOne(productId);
+        cacheManager.addToCache("product", productId, p);
+        return p;
+    }
+
+    private VAT getVatByCountryCodeAndProductId(String countryCode, long productId) {
+        String key = countryCode + '#' + productId;
+        VAT v = cacheManager.getFromCache("vat", key);
+        if(v != null) {
+            return v;
+        }
+        v = vatRepository.findOneByCountryCodeAndProductId(countryCode.toUpperCase(), productId);
+        cacheManager.addToCache("vat", key, v);
+        return v;
+    }
 }
