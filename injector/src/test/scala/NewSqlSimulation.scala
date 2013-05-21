@@ -3,31 +3,31 @@ import com.excilys.ebi.gatling.http.Predef._
 import bootstrap._
 
 class NewSqlSimulation extends Simulation {
-	val urlBase = "http://localhost"
+	// Target server
+  val server = "localhost"
+  val port = "8080"
+  val url = "http://" + server + ":" + port
+  // Test params (in seconds)
+  val rampUp = 10;
+  val duration = rampUp * 4
+  // Users per scenario
+  val txUsers = 80
+  val ivtUsers = 10
+  val toUsers = 10
 
-	val httpConf = httpConfig.baseURL(urlBase).proxy("localhost", 8080).httpsPort(8084)
+	val httpConf = httpConfig
+    .baseURL(url)
+    .acceptHeader("application/json, text/plain, */*")
+    .acceptCharsetHeader("ISO-8859-1,utf-8;q=0.7,*;q=0.3")
+    .acceptEncodingHeader("gzip,deflate,sdch")
+    .acceptLanguageHeader("en-US,en;q=0.8,fr;q=0.6")
+    .connection("keep-alive")
+    .userAgentHeader("Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31")
+    .warmUp(url)
 
-
-	val headers_home = Map(
-		"Accept" -> """text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8""",
-		"Accept-Charset" -> """ISO-8859-1,utf-8;q=0.7,*;q=0.3""",
-		"Accept-Encoding" -> """gzip,deflate,sdch""",
-		"Accept-Language" -> """fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4""",
-		"Connection" -> """keep-alive""",
-		"Host" -> """localhost:8081""",
-		"User-Agent" -> """Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11"""
+	val headers = Map(
+		"Accept" -> """text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"""
 	)
-
-	val headers_requests = headers_home ++ Map(
-		"Referer" -> """http://localhost:8081/"""
-		)
-		
-	//In seconds
-	//For stress test use 250 s.
-	val rampUp = 10;
-	//In seconds, be carefull to never had a duration smaller than the pause time... scenario will never end
-	//For stress test use rampUp + 100
-	val duration = rampUp * 4
 	
 	//It seems that only queue and random feeder are available today
 	//random is required as feeder requires as many lines in CSV as hit...
@@ -44,7 +44,7 @@ class NewSqlSimulation extends Simulation {
 			.queryParam("countryCode", "${countryCode}")
 			.queryParam("productId", "${productId}")
 			.queryParam("storeId", "${storeId}")
-			.headers(headers_requests)
+			.headers(headers)
 			.check(regex(""".*\{"txId":([0-9]*),.*""").exists.saveAs("transactionId"))
 		)
 		.pause(1, 2)
@@ -63,7 +63,7 @@ class NewSqlSimulation extends Simulation {
 				.queryParam("productId", "${productId}")
 				.queryParam("storeId", "${storeId}")
 				.queryParam("txId", "${transactionId}")
-				.headers(headers_requests)
+				.headers(headers)
 			)
 		}
 		.pause(2, 3)
@@ -71,7 +71,7 @@ class NewSqlSimulation extends Simulation {
 			http("total")
 			.get("/total")
 			.queryParam("txId", "${transactionId}")
-			.headers(headers_requests)
+			.headers(headers)
 		)
 		.pause(2, 3)
 	}
@@ -83,7 +83,7 @@ class NewSqlSimulation extends Simulation {
 			http("Inventory")
 			.get("/inventory")
 			.queryParam("storeId", "${storeId}")
-			.headers(headers_requests)
+			.headers(headers)
 		)
 		.pause(5, 10)
 	}
@@ -95,14 +95,14 @@ class NewSqlSimulation extends Simulation {
 			http("turnover")
 			.get("/turnover")
 			.queryParam("groupId", "${groupId}")
-			.headers(headers_requests)
+			.headers(headers)
 		)
 		.pause(5, 10)
 	}
 
 	setUp(
-		txScn.users(80).ramp(rampUp).protocolConfig(httpConf),
-		ivtScn.users(10).ramp(rampUp).protocolConfig(httpConf),
-		toScn.users(10).ramp(rampUp).protocolConfig(httpConf)
+		txScn.users(txUsers).ramp(rampUp).protocolConfig(httpConf),
+		ivtScn.users(ivtUsers).ramp(rampUp).protocolConfig(httpConf),
+		toScn.users(toUsers).ramp(rampUp).protocolConfig(httpConf)
 	)
 }
